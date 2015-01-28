@@ -1,0 +1,60 @@
+Incorporate Native com.modulus.qbar.lang.QBSystem;
+Import Native java.lang.Math as JavaMath;
+-{
+	This part of this file is just used to
+	test some of the common mathematical series.
+}-
+
+Namespace Test {
+	let construct = do {
+		this.x <- 5;
+	}
+}
+
+Namespace Series {
+	Struct Temp {
+		let new Temp() = do {
+			this.tmp <- Series.new Temp2();
+		}
+		
+		let new Temp2() = do {
+			this.i <- 5;
+		}
+	}
+
+	let construct = do {
+
+		this.factorial <- [ n | if n <= 1 then 1 else n * this # (n - 1) ];
+		
+		this.fibonacci <- [ n | if n < 2 then n else this # (n - 1) + this # ( n - 2 ) ];
+		
+		this.collatz <- [ n | if n <= 1 then 0
+						else if n % 2 == 0 then 1 + this # (n div 2)
+						else 1 + this # (n * 3 + 1) ];
+		
+		this.pascalsTriangle <- [ n | if n <= 0 then [ 1 ]
+									else if n == 1 then [ 1, 1 ]
+									else Series.pascalFromList( this # (n-1) ) ];
+	}
+	
+	let pascal( n ) = this.pascalsTriangle # n;
+	
+	let pascalFromList( last ) = do {
+		tmp <- [ 1 ];
+		
+		for [ 0 .. last.length - 2 ] -> n {
+			tmp +< last # n + last # (n + 1);
+		}
+		
+		tmp +< 1;
+		return tmp;
+	}
+	
+	let test = Test.x;
+}
+Incorporate Series;
+
+let main = do {
+	-- printStrLn( "This is the JavaMath.cos(15) call: " ++ JavaMath.cos(15) );
+	printStrLn( "Test: " ++ test() );
+}

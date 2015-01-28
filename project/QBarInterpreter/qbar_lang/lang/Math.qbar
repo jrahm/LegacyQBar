@@ -1,0 +1,131 @@
+Import qbar/lang/System;
+
+-{
+	Math namespace, this holds many
+	useful functions for anytime
+	math computations.
+	
+	This namespace includes aliases
+	of all the functions in java.lang.Math
+	and also includes some extra series
+	functions.
+ }-
+Namespace Math {
+	
+	-- need to include the native java class
+	Incorporate Native com.modulus.qbar.lang.QBMath;
+	
+	-{
+		The constructor of QBMath creates some
+		of the basic series that QBMath uses.
+	 }-
+	let construct = do {
+		
+		
+		-- the `this` is negated all too often
+		-{
+			The series list for pascal's
+			triangle.
+		 }-
+		this.pascalSeries <- [ n | if n <= 0 then [1]
+						else if n == 1 then [ 1, 1 ]
+						else QBMath.pascalTriangle( this#(n-1) ) ];
+		
+		-{
+			The series list for the fibonacci
+			series
+		 }-
+		this.fibonacciSeries <- [ n | if n < 2 then n
+							else this#( n - 1 ) + this#(n - 2) ];
+		
+		-{
+			The series list for the
+			factorial series.
+		 }-
+		this.factorialSeries <- [ n | if n <= 1 then 1
+								else n * this#(n - 1) ];
+		
+		this.dx <- 0.00000000001;
+	}
+	
+	-{
+		The pascal function takes
+		a list and uses that list
+		to generate what would be
+		the next list in the pascal
+		series.
+	 }-
+	let pascalTriangle( lastList ) = do {
+		ret <- [1];
+		
+		for [ 0 .. lastList.length - 2 ] -> n {
+			ret +< lastList#n + lastList#(n+1);
+		}
+		
+		ret +< 1;
+		return ret;
+	}
+	
+	-{
+		Directly accesses the factorialSeries
+		get function.
+		
+		@return the factorial of `n` (`n!`)
+	 }-
+	let factorial( n ) = this.factorialSeries # n;
+	
+	-{
+		@return the `n`<sup>th</sup> number
+		in the fibonacci series.
+	 }-
+	let fibonacci( n ) = this.fibonacciSeries # n;
+	
+	-{
+		@return the `n`<sup>th</sup> list in
+		pascal's triangle list.
+	 }-
+	let pascal( n ) = this.pascalList # n;
+	
+	-{
+		@return a function that is a rough derivative
+		of the original that was passed. This function
+		uses the `dx` defined in the Math namespace.
+		
+		The Function will inherently round to three decimal places.
+	 }-
+	let derivative( func ) = do {
+		let tmp(x) = roundN( ( func(x + this.dx) + ( 0 - func(x) ) ) / this.dx, 3 );
+		
+		return tmp;
+	}
+	
+	-{
+		@return a function that is a rough derivative
+		of the original that was passed. This function
+		takes a function, the percision of `dx` and an
+		integer value of how many decimals to round to.
+	 }-
+	let derivativedx( func, dx, round ) = do {
+		let tmp(x) = roundN( ( func(x + this.dx) + ( 0 - func(x) ) ) / dx, round );
+		
+		return tmp;
+	}
+	
+	let integral( func ) = do {
+		lst <- [ n | if this.abs( n ) <= this.dx then func( n ) * this.dx
+						else ( func( n ) +
+						
+						( if n < 0 then this#( n + dx )
+							else this#( n - dx ) ) ) * this.dx ];
+		return lst;
+	}
+	
+	-{
+		@return a number that has been rounded
+		to `n` decimal places.
+	 }-
+	let roundN( x, n ) = do {
+		pow <- 10.0 ^ n;
+		return Math.round( x * pow ) / pow;
+	}
+}

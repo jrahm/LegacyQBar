@@ -1,0 +1,16 @@
+Import qbar/lang/System.qbar;
+
+Namespace Maybe {
+	Struct Maybe {
+		let new Null = this.null <- 1;
+		
+		let new Maybe( obj ) = do {
+			this.obj <- obj;
+			this.null <- 0;
+		}
+		
+		let isNull = this.null;
+		
+		let getObj = this.obj;
+	}
+}

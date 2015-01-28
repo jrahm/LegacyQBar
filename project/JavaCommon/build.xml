@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Apr 5, 2011 7:08:11 PM                                                        
+
+     JavaCommon    
+     Common resources shared by all java projects
+                   
+     jrahm                                                                
+     ====================================================================== -->
+<project name="JavaCommon" default="build">
+	
+	<import file="common_build.xml" />
+	
+	<path id="project.class.path">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+	
+	<target name="lib" description="Builds The Lib Direrctory">
+		<mkdir dir="${lib.dir}" />
+		
+		<copy todir="${lib.dir}" >
+			<fileset dir="lib" includes="**/*.jar" />
+		</copy>
+	</target>
+	
+	<target name="compile" depends="lib">
+		<mkdir dir="${bin.dir}" />
+		<javac srcdir="${src.dir}" includes="**" encoding="utf-8" destdir="${bin.dir}">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+	
+	<target name="package" depends="compile" >
+		<mkdir dir="${lib.dir}"/>
+		<jar basedir="${bin.dir}" destfile="${lib.dir}/${ant.project.name}.jar" /> 
+	</target>
+	
+	<target name="doc">
+		<mkdir dir="${doc.dir}" />
+		<javadoc sourcepath="${src.dir}" destdir="${doc.dir}" />
+	</target>
+	
+	<target name="build" depends="package" />
+		
+	<target name="clean">
+		<delete dir="bin"/>
+	</target>	
+</project>

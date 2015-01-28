@@ -1,0 +1,12 @@
+-{
+	This namespace has several native methods
+	that are used to help dealing with file operations.
+}-
+
+@infix << 30;
+Namespace IO {
+	-{
+		Incorporates com.modulus.qbar.io.IOTools class
+	 }-
+	Incorporate Native com.modulus.qbar.io.IOTools;
+}

@@ -1,0 +1,62 @@
+Import qbar/io/Reader.qbar;
+Import qbar/lang/Maybe.qbar;
+Import qbar/lang/System.qbar;
+
+Namespace BufferedReader {
+	Incorporate Reader;
+	
+	Struct BufferedReader extends Reader {
+		let new BufferedReader( reader ) = do {
+			this.init( reader );
+			
+			if reader isa Reader {
+				this.reader <- reader;
+			} else {
+				this.reader <- new Reader( reader );
+			}
+			
+			this.buffer <- [];
+			this.bufSize <- 4096;
+			this.bufCur <- 0;
+			this.dbg <- 1;
+			
+			System.printStrLn( "START" );
+			
+			this.readBuffer();
+		}
+		
+		let read = do {
+			if this.bufCur == this.bufSize {
+				this.readBuffer();
+				this.bufCur <- 0;
+			}
+			
+			yeild <- this.buffer#this.bufCur;
+			this.bufCur <- this.bufCur + 1;
+			
+			return yeild;
+		}
+		
+		let readBuffer = do {
+			System.printStrLn( "Reading Buffer " ++ this.dbg );
+			this.buffer <- this.readBytes( this.bufSize );
+			this.dbg <- this.dbg + 1;
+		}
+		
+		let readLine = do {
+			str <- "" ++ "";
+			
+			i <- 0;
+			while ( i <- this.read() ) != 10 {
+				if i == -1 {
+					return if str.length == 0 then Maybe.new Null()
+								else Maybe.new Maybe( str );
+				}
+			
+				str +< i as Character;
+			}
+			
+			return Maybe.new Maybe(str);
+		}
+	}
+}

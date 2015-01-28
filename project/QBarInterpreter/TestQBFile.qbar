@@ -1,0 +1,7 @@
+Import qbar/io/IO;
+Import qbar/lang/System;
+
+let main = do {
+	test <- "Hello; World";
+	System.printStrLn( test );
+}

@@ -1,0 +1,84 @@
+-{
+	Math namespace, this holds many
+	useful functions for anytime
+	math computations.
+	
+	This namespace includes aliases
+	of all the functions in java.lang.Math
+	and also includes some extra series
+	functions.
+ }-
+Namespace QBMath {
+	
+	-- need to include the native java class
+	Incorporate Native java.lang.Math;
+	
+	-{
+		The constructor of QBMath creates some
+		of the basic series that QBMath uses.
+	 }-
+	let construct = do {
+		
+		
+		-- the `this` is negated all too often
+		-{
+			The series list for pascal's
+			triangle.
+		 }-
+		this.pascalSeries <- [ n | if n <= 0 then [1]
+						else if n == 1 then [ 1, 1 ]
+						else QBMath.pascalTriangle( this#(n-1) ) ];
+		
+		-{
+			The series list for the fibonacci
+			series
+		 }-
+		this.fibonacciSeries <- [ n | if n < 2 then n
+							else this#( n - 1 ) + this#(n - 2) ];
+		
+		-{
+			The series list for the
+			factorial series.
+		 }-
+		this.factorialSeries <- [ n | if n <= 1 then 1
+								else n * this#(n - 1) ];
+	}
+	
+	-{
+		The pascal function takes
+		a list and uses that list
+		to generate what would be
+		the next list in the pascal
+		series.
+	 }-
+	let pascalTriangle( lastList ) = do {
+		ret <- [1];
+		
+		for [ 0 .. lastList.length - 2 ] -> n {
+			ret +< lastList#n + lastList#(n+1);
+		}
+		
+		ret +< 1;
+		return ret;
+	}
+	
+	-{
+		Directly accesses the factorialSeries
+		get function.
+		
+		@return the factorial of `n` (`n!`)
+	 }-
+	let factorial( n ) = this.factorialSeries # n;
+	
+	-{
+		@return the `n`<sup>th</sup> number
+		in the fibonacci series.
+	 }-
+	let fibonacci( n ) = this.fibonacciSeries # n;
+	
+	-{
+		@return the `n`<sup>th</sup> list in
+		pascal's triangle list.
+	 }-
+	let pascal( n ) = this.pascalList # n;
+}

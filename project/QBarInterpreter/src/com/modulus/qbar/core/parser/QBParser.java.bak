@@ -1,0 +1,98 @@
+package com.modulus.qbar.core.parser;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.modulus.dataread.expressions.ParseRules;
+import com.modulus.dataread.expressions.Statement;
+import com.modulus.dataread.expressions.StatementFactory;
+import com.modulus.dataread.expressions.StatementFormatter;
+import com.modulus.dataread.expressions.impl.CBasedParseRules;
+import com.modulus.dataread.expressions.impl.FormatStatement;
+import com.modulus.dataread.expressions.impl.SimpleExpressionParser;
+import com.modulus.qbar.core.QBClass;
+import com.modulus.qbar.core.QBFunction;
+import com.modulus.qbar.core.QBStruct;
+import com.modulus.qbar.core.exceptions.ExecutionException;
+
+/**
+ * This class is responsible for parsing all of the information
+ * that is held in a single Q-Bar source file.
+ * 
+ * @author jrahm
+ *
+ */
+public class QBParser {
+	/**
+	 * Formatter that formats all of the statements when they
+	 * are created by the factory
+	 */
+	public static final StatementFormatter formatter = new StatementFormatter() {
+		@Override
+		public String formatHeader(String header) {
+			return header.trim();
+		}
+	};
+	
+	/**
+	 * Generates all of the statements to be parsed by the
+	 * ExpressionParser.
+	 */
+	public static final StatementFactory<FormatStatement> statementFactory = new StatementFactory<FormatStatement>() {
+		
+		@Override
+		public FormatStatement generateStatement(Map<String, Object> params) {
+			return new FormatStatement(formatter);
+		}
+	};
+	
+	/**
+	 * Parses the code from some source.
+	 * @param code the code from the source
+	 */
+	public void parseCode(String code) {
+		ParseRules cRules = new CBasedParseRules(code);
+		SimpleExpressionParser parser = new SimpleExpressionParser(cRules);
+		
+		Statement node = parser.parseStatements( statementFactory );
+		Statement[] stmts = node.getChildren();
+	}
+	
+	/**
+	 * This method parses a class from a statement
+	 * @param stmt the statement that holds the class
+	 * @return the class that was parsed from this statement
+	 */
+	public QBClass parseClass(Statement stmt){
+		Statement[] children = stmt.getChildrenByHeader("Struct");
+		QBStruct struct = new QBStruct();
+		
+		for(int i = 0;i < children.length;i++){
+			Statement child = children[i];
+			
+			String name = child.getHeader();
+			struct.addInstanceVariable(name);
+			
+			if(name.startsWith("Class")){
+				if(!name.endsWith("{")){
+					throw new ExecutionException("`Class' is a reserved word and may not be used as a variable name");
+				}
+				
+				QBClass parsed = parseClass(child);
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Parses a function from a statement.
+	 * 
+	 * @param stmt the statement to parse the function from
+	 * @return the function that was parsed from this statement.
+	 */
+	public QBFunction parseFunction(Statement stmt){
+		return new QBFunction(stmt);
+	}
+}

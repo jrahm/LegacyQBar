@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Apr 5, 2011 11:04:12 PM                                                        
+
+     project    
+     description
+                   
+     jrahm                                                                
+     ====================================================================== -->
+<project name="BuildCommon" >
+	
+	<property name="lib.dir" value="../../../build/java_libs"/>
+	<property name="bin.dir" value="classes" />
+	<property name="src.dir" value="src" />
+	<property name="doc.dir" value="../../../build/java_libs/doc"/>
+	<property name="endorsed.dir" value="../../../build/qbar/lib/endorsed"/>
+
+</project>

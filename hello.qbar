@@ -1,0 +1,8 @@
+#!/usr/bin/qbar
+Import qbar/lang/System.qbar;
+
+let main = do {
+	for [ 0 .. ] -> i {
+		System.printStrLn( "" ++ i ++ ".)" );
+	}
+}

@@ -1,0 +1,29 @@
+Import qbar/io/IO.qbar;
+
+-{
+	This namespace holds many raw and basic
+	functions that the user may want to use.
+	
+	This Namespace is for the most part native.
+ }-
+Namespace System {
+	-- incorporate the native QBSystem class
+	Incorporate Native com.modulus.qbar.lang.QBSystem;
+	
+	let construct = do {
+		this.out <- IO.getStdOut();
+		this.in <- IO.getStdIn();
+		this.err <- IO.getStdErr();
+		
+		this.bufferedIn <- IO.new BufferedReader( this.in );
+	}
+	
+	let printStrLn( str ) =
+		this.out.printStrLn( str );
+		
+	let printStr( str ) =
+		this.out.printStr( str );
+	
+	let readLine =
+		this.bufferedIn.readLine();
+}

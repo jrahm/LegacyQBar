@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Apr 5, 2011 10:02:29 PM                                                        
+
+     QBarInterpreter    
+     description
+                   
+     jrahm                                                                
+     ====================================================================== -->
+<project name="QBarInterpreter" default="build">
+    <import file="../JavaCommon/common_build.xml"/>
+	
+	<property name="prj.src.dir" value="src" />
+	<property name="prj.bin.dir" value="bin" />
+	
+	<path id="project.class.path">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+	
+	<description>
+            description
+    </description>
+
+    <!-- ================================= 
+          target: build              
+         ================================= -->
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: lib                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="lib">
+    	<mkdir dir="${lib.dir}"/>
+		<copy todir="${lib.dir}" >
+			<fileset dir="lib" includes="**/*.jar" />
+		</copy>
+    </target>
+
+	<target name="compile" depends="lib">
+		<mkdir dir="${prj.bin.dir}" />
+		<javac srcdir="${prj.src.dir}" destdir="${prj.bin.dir}" includes="**" encoding="utf-8" >
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+	
+	<target name="package" depends="compile">
+		<mkdir dir="${lib.dir}"/>
+		<copy todir="${lib.dir}">
+			<fileset file="qbar" />
+		</copy>
+		<manifestclasspath property="lib.list" jarfile="${lib.dir}/CommonJava.jar">
+			<classpath refid="project.class.path"/>
+		</manifestclasspath>
+
+
+		<jar basedir="${prj.bin.dir}" destfile="${lib.dir}/${ant.project.name}.jar" >
+			<manifest>
+				<attribute name="Main-Class"
+			          value="com.modulus.qbar.core.interpreter.Main"/>
+				<attribute name="Class-Path" value="${lib.list}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="doc">
+		<mkdir dir="${doc.dir}" />
+		<javadoc sourcepath="${prj.src.dir}" destdir="${doc.dir}" />
+	</target>
+	
+	<target name="build" depends="package,clean" />
+	<target name="clean" >
+		<delete dir="bin">
+		</delete> 
+	</target>
+</project>

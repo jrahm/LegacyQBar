@@ -1,0 +1,11 @@
+
+-{
+	This namespace holds many raw and basic
+	functions that the user may want to use.
+	
+	This Namespace is for the most part native.
+ }-
+Namespace System {
+	-- incorporate the native QBSystem class
+	Incorporate Native com.modulus.qbar.lang.QBSystem;
+}

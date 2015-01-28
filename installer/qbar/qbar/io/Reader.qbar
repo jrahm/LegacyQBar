@@ -1,0 +1,24 @@
+Namespace Reader {
+	Struct Reader {
+		-- some kind of instream
+		let new Reader( instream ) = this.init( instream );
+		
+		let init( instream ) = this.instream <- instream;
+		
+		let close = this.instream.close();
+		
+		let mark = this.instream.mark();
+		
+		let reset = this.instream.reset();
+		
+		let read = this.instream.read();
+		
+		let readBytes(n) = this.instream.readBytes(n);
+		
+		let skip(n) = this.instream.skip();
+		
+		let available = this.instream.available();
+		
+		let nextChar = this.read() as Character;
+	}
+}
